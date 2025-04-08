@@ -80,8 +80,10 @@ def update_recipe(recipe_id):
     recipe = Recipe.query.get(recipe_id)
     if not recipe:
         return jsonify({'error':'Recipe not found'}), 404
+    
     data = request.get_json()
-        #Validate the incoming JSON data for required fields
+
+    #Validate the incoming JSON data for required fields
     required_fields = ['title', 'ingredients', 'instructions', 'servings', 'description', 'image_url']
     for field in required_fields:
         if field not in data or data[field] == "":
@@ -112,6 +114,7 @@ def update_recipe(recipe_id):
 @app.route('/api/recipes/<int:recipe_id>', methods=['DELETE'])
 def delete_recipe(recipe_id):
     recipe = Recipe.query.get(recipe_id)
+
     if not recipe:
         return jsonify({'error': 'Recipe not found'}), 404
     db.session.delete(recipe)
