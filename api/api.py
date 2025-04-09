@@ -67,6 +67,7 @@ def add_recipe():
         'id': new_recipe.id,
         'title': new_recipe.title,
         'ingredients': new_recipe.ingredients,
+        'instructions':new_recipe.instructions,
         'servings': new_recipe.servings,
         'description': new_recipe.description,
         'image_url': new_recipe.image_url
