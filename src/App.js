@@ -16,7 +16,7 @@ function App() {
     description: "",
     image_url: "https://images.pexels.com/photos/9986228/pexels-photo-9986228.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" //default
   });
-  const [showNewRecipeForm, setShowNewRecipeForm] = useState(false)
+  const [showNewRecipeForm, setShowNewRecipeForm] = useState(false);
 
   useEffect(() => {
     const fetchAllRecipes = async () => {
@@ -42,7 +42,7 @@ const handleNewRecipe = async (e, newRecipe) => {
   e.preventDefault();
 
   try {
-    const response = await fetch("/api/recipes",{
+    const response = await fetch("/api/recipes", {
       method: "POST",
       headers: {
         "Content-Type":"application/json"
@@ -68,15 +68,56 @@ const handleNewRecipe = async (e, newRecipe) => {
         image_url: "https://images.pexels.com/photos/9986228/pexels-photo-9986228.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
       });
  
+    } else {
+      console.error("Oops - could not add recipe!")
     }
 
   } catch (e) {
     console.error("An error occurred during the request", e);
     console.log("An unexpected error occurred. Please try again.")
+  }
+}  
 
+const handleUpdateRecipe = async (e, selectedRecipe) => {
+  e.preventDefault();
+  const { id } = selectedRecipe;
+
+  try {
+    const response = await fetch(`/api/recipes/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type":"application/json"
+      },
+      body: JSON.stringify(selectedRecipe)
+    });
+      // or can use if (response.status === 200 ) {
+      if (response.ok) {
+        const data = await response.json();
+       
+        setRecipes(  
+          recipes.map((recipe) => {
+            if (recipe.id === id) {
+              // Return the saved data from the db
+              return data.recipe;
+            } else {
+              return recipe;
+            }
+          })
+        );
+
+        console.log("Recipe updated successfully!");
+
+      } else {
+      console.error("Oops - could not update recipe!")
+    }
+
+  } catch (e) {
+    console.error("An error occurred during the request", e);
+    console.log("An unexpected error occurred. Please try again.")
   }
 
-}  
+  setSelectedRecipe(null);   
+};  
 
 const handleSelectRecipe = (recipe) => {
   setSelectedRecipe(recipe);
@@ -95,22 +136,38 @@ const showRecipeForm = () => {
   setSelectedRecipe(null);
 };
 
-const onUpdateForm = (e) => {
+const onUpdateForm = (e, action ="new") => {
   const { name, value } = e.target;
-  setNewRecipe({ ...newRecipe, [name]: value });
-};
+  if (action==="update") {
+    setSelectedRecipe({ ...selectedRecipe, [name]: value });
+  } else if (action==="new"){
+    setNewRecipe({ ...newRecipe, [name]: value });
+}};
 
 
 
 return (
   <div className='recipe-app'>
     <Header showRecipeForm={showRecipeForm}/>
-      {showNewRecipeForm && <NewRecipeForm newRecipe={newRecipe} hideRecipeForm={hideRecipeForm} onUpdateForm={onUpdateForm} handleNewRecipe={handleNewRecipe}/>}
-      {selectedRecipe && <RecipeFull selectedRecipe={selectedRecipe} handleUnselectRecipe={handleUnselectRecipe}/>}
+      {showNewRecipeForm && 
+      <NewRecipeForm 
+        newRecipe={newRecipe} 
+        hideRecipeForm={hideRecipeForm} 
+        onUpdateForm={onUpdateForm} 
+        handleNewRecipe={handleNewRecipe}/>}
+      {selectedRecipe && 
+      <RecipeFull 
+        selectedRecipe={selectedRecipe} 
+        handleUnselectRecipe={handleUnselectRecipe}
+        onUpdateForm={onUpdateForm}
+        handleUpdateRecipe={handleUpdateRecipe}/>}
       {!selectedRecipe && !showNewRecipeForm && (
       <div className="recipe-list">
         {recipes.map((recipe) => (      
-          <RecipeExcerpt key={recipe.id} recipe={recipe} handleSelectRecipe={handleSelectRecipe}/>
+          <RecipeExcerpt 
+            key={recipe.id} 
+            recipe={recipe} 
+            handleSelectRecipe={handleSelectRecipe}/>
         ))}
       </div>)}
     </div>
