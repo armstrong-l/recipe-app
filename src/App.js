@@ -23,8 +23,10 @@ function App() {
   const [showNewRecipeForm, setShowNewRecipeForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
+  // Retrieve all recipes to display on opening
   useEffect(() => {
     const fetchAllRecipes = async () => {
+
       try {
       const request = await fetch("/api/recipes");
       if (request.ok) {
@@ -34,7 +36,7 @@ function App() {
         displayToast("Could not fetch the recipes!", "error");
       } 
             
-      } catch {
+      } catch(e) {
         displayToast("An unexpected error occurred.  Please try again.", "error");
       }
     };
@@ -78,7 +80,7 @@ const handleNewRecipe = async (e, newRecipe) => {
       displayToast("Oops - could not add recipe!", "error");
     }
 
-  } catch {
+  } catch(e) {
     displayToast("An unexpected error occurred. Please try again.", "error");
   }
 }  
@@ -118,7 +120,7 @@ const handleUpdateRecipe = async (e, selectedRecipe) => {
       displayToast("Oops - could not update recipe!", "error");
     }
 
-  } catch {
+  } catch(e) {
     displayToast("An unexpected error occurred. Please try again.", "error");
   }
 
@@ -146,7 +148,7 @@ const handleDeleteRecipe = async (recipeId) => {
         displayToast("Oops - could not delete recipe!", "error");
       }
 
-  } catch {
+  } catch(e) {
     displayToast("An unexpected error occurred. Please try again.", "error");
   }
 
