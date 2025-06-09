@@ -16,7 +16,7 @@ function App() {
     title: "",
     ingredients: "",
     instructions: "",
-    servings: 1, //conservative default
+    servings: 1, 
     description: "",
     image_url: "https://images.pexels.com/photos/9986228/pexels-photo-9986228.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" //default
   });
@@ -99,7 +99,6 @@ const handleUpdateRecipe = async (e, selectedRecipe) => {
       },
       body: JSON.stringify(selectedRecipe)
     });
-      // or can use if (response.status === 200 ) {
       if (response.ok) {
         const data = await response.json();
        
@@ -135,7 +134,6 @@ const handleDeleteRecipe = async (recipeId) => {
     const response = await fetch(`/api/recipes/${recipeId}`, {
       method: "DELETE",
     });
-      // or can use if (response.status === 200 ) {
       if (response.ok) {    
         setRecipes(  
           recipes.filter((recipe) => {return recipe.id !== recipeId}));
